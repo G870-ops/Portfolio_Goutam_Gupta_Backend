@@ -26,6 +26,7 @@ app.use(helmet());
 const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.trim().replace(/\/+$/, '') : null;
 const allowedOrigins = [
   clientUrl,
+  'https://portfolio-goutam-gupta.vercel.app',
   'http://localhost:5173',
   'http://localhost:3000',
   'http://127.0.0.1:5173',
@@ -63,6 +64,19 @@ app.use(express.urlencoded({ extended: true, limit: '15kb' }));
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
+
+// Root Status Route (Displays when visiting backend URL directly)
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    status: 'ONLINE',
+    system: 'MAKAUT_NODE.04',
+    architecture: 'MERN Full-Stack v4.0',
+    message: 'Goutam Gupta Portfolio Backend Microservice is active and operational.',
+    healthEndpoint: '/api/health',
+    timestamp: new Date().toISOString(),
+  });
+});
 
 // System Telemetry & Health Check API
 app.get('/api/health', (req, res) => {
