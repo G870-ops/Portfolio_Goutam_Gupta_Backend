@@ -5,15 +5,25 @@ import Message from '../models/Message.js';
  * Configure Nodemailer Transporter
  */
 const createTransporter = () => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  const user = process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : 'goutamgupta605@gmail.com';
+  // Gmail app passwords can contain spaces, strip them for compatibility
+  const pass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.replace(/\s+/g, '') : null;
+
+  if (!user || !pass) {
+    console.warn('[NODEMAILER CONFIG] Missing EMAIL_USER or EMAIL_PASS environment variables.');
     return null;
   }
 
   return nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE || 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // Use SSL/TLS
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user,
+      pass,
+    },
+    tls: {
+      rejectUnauthorized: false,
     },
   });
 };
@@ -45,12 +55,14 @@ export const submitContact = async (req, res, next) => {
     // 2. Dispatch Email Notification via Nodemailer (if configured)
     const transporter = createTransporter();
     let emailSent = false;
+    let mailErrorMsg = null;
 
     if (transporter) {
       try {
+        const adminEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || process.env.EMAIL_USER || 'goutamgupta605@gmail.com').trim();
         const mailOptions = {
-          from: `"Portfolio Telemetry" <${process.env.EMAIL_USER}>`,
-          to: process.env.ADMIN_NOTIFICATION_EMAIL || process.env.EMAIL_USER,
+          from: `"Portfolio Telemetry" <${process.env.EMAIL_USER || 'goutamgupta605@gmail.com'}>`,
+          to: adminEmail,
           replyTo: email,
           subject: `⚡ [Portfolio Alert] ${subject || 'New Contact Message'} from ${name}`,
           html: `
@@ -77,18 +89,23 @@ export const submitContact = async (req, res, next) => {
           `,
         };
 
-        await transporter.sendMail(mailOptions);
+        const info = await transporter.sendMail(mailOptions);
+        console.log(`[EMAIL DISPATCH SUCCESS] Email successfully sent to ${adminEmail}: ${info.messageId}`);
         emailSent = true;
       } catch (mailError) {
-        console.error('[EMAIL NOTIFICATION WARNING] Nodemailer failed to send email:', mailError.message);
+        mailErrorMsg = mailError.message;
+        console.error('[EMAIL NOTIFICATION WARNING] Nodemailer failed to send email:', mailError);
         // Do not crash, message is safely in MongoDB
       }
+    } else {
+      console.warn('[EMAIL NOTIFICATION WARNING] Transporter could not be created. Check EMAIL_USER & EMAIL_PASS in environment.');
     }
 
     res.status(201).json({
       success: true,
       message: 'Your message has been transmitted successfully to Goutam Gupta. Thank you!',
       emailDispatched: emailSent,
+      ...(mailErrorMsg ? { emailWarning: mailErrorMsg } : {}),
       data: savedMessage,
     });
   } catch (error) {
