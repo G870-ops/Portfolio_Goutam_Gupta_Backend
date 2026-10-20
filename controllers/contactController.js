@@ -74,12 +74,16 @@ export const submitContact = async (req, res, next) => {
                 <tr><td style="color: #ff00ff; width: 120px; font-weight: bold;">Sender:</td><td>${name}</td></tr>
                 <tr><td style="color: #ff00ff; font-weight: bold;">Email:</td><td><a href="mailto:${email}" style="color: #00f3ff;">${email}</a></td></tr>
                 <tr><td style="color: #ff00ff; font-weight: bold;">Subject:</td><td>${subject || 'General Inquiry'}</td></tr>
-                <tr><td style="color: #ff00ff; font-weight: bold;">Timestamp:</td><td>${new Date().toLocaleString('en-IN', {
-                  timeZone: process.env.TZ || 'Asia/Kolkata',
-                  dateStyle: 'medium',
-                  timeStyle: 'medium',
+                <tr><td style="color: #ff00ff; font-weight: bold;">Timestamp:</td><td>${new Date().toLocaleString('en-US', {
+                  timeZone: 'Asia/Kolkata',
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit',
+                  second: '2-digit',
                   hour12: true,
-                })} (IST)</td></tr>
+                })}</td></tr>
               </table>
               <div style="margin-top: 25px; padding: 15px; background: rgba(0, 243, 255, 0.05); border-left: 3px solid #00f3ff; border-radius: 4px;">
                 <h4 style="margin: 0 0 10px 0; color: #00f3ff;">Transmission Content:</h4>
