@@ -15,12 +15,33 @@ import { notFound, errorHandler } from './middleware/errorHandler.js';
 dotenv.config();
 
 // Initialize MongoDB Atlas connection
-connectDB();
+connectDB().catch((err) => {
+  console.warn('[SERVER INIT] Initial DB connection deferred:', err.message);
+});
 
 const app = express();
 
+// Ensure DB is connected before processing requests (critical for serverless / Vercel cold starts)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    // If route doesn't require DB (e.g. /api/health or root status), continue
+    if (req.path === '/' || req.path === '/api/health') {
+      return next();
+    }
+    return res.status(503).json({
+      success: false,
+      message: 'Database connection failed or timed out. Please check network/IP whitelist in MongoDB Atlas.',
+      error: err.message,
+    });
+  }
+});
+
 // Security HTTP headers
 app.use(helmet());
+
 
 // Cross-Origin Resource Sharing (CORS) Configuration
 const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.trim().replace(/\/+$/, '') : null;
