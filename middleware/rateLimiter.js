@@ -1,8 +1,5 @@
 import rateLimit from 'express-rate-limit';
 
-/**
- * Rate limiter for contact form submission: max 5 requests per 15 minutes per IP
- */
 export const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
@@ -14,9 +11,6 @@ export const contactLimiter = rateLimit({
   },
 });
 
-/**
- * Rate limiter for authentication login: max 10 attempts per 15 minutes
- */
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,

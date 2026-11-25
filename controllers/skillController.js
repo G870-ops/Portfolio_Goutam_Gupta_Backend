@@ -1,15 +1,9 @@
 import Skill from '../models/Skill.js';
 
-/**
- * @desc   Fetch all skills (grouped by category or flat list)
- * @route  GET /api/skills
- * @access Public
- */
 export const getSkills = async (req, res, next) => {
   try {
     const skills = await Skill.find().sort({ category: 1, proficiency: -1 });
 
-    // Also provide structured grouped data for easy frontend rendering
     const grouped = skills.reduce((acc, skill) => {
       acc[skill.category] = acc[skill.category] || [];
       acc[skill.category].push(skill);
@@ -27,11 +21,6 @@ export const getSkills = async (req, res, next) => {
   }
 };
 
-/**
- * @desc   Add new skill
- * @route  POST /api/skills
- * @access Private/Admin
- */
 export const createSkill = async (req, res, next) => {
   try {
     const { category, name, proficiency, icon } = req.body;
@@ -52,11 +41,6 @@ export const createSkill = async (req, res, next) => {
   }
 };
 
-/**
- * @desc   Update an existing skill
- * @route  PUT /api/skills/:id
- * @access Private/Admin
- */
 export const updateSkill = async (req, res, next) => {
   try {
     const skill = await Skill.findById(req.params.id);
@@ -86,11 +70,6 @@ export const updateSkill = async (req, res, next) => {
   }
 };
 
-/**
- * @desc   Delete a skill
- * @route  DELETE /api/skills/:id
- * @access Private/Admin
- */
 export const deleteSkill = async (req, res, next) => {
   try {
     const skill = await Skill.findById(req.params.id);

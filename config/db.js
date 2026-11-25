@@ -2,17 +2,11 @@ import mongoose from 'mongoose';
 
 let cachedConnection = null;
 
-/**
- * Connect to MongoDB Atlas cluster with cached connection promise
- * for serverless (Vercel) environments
- */
 const connectDB = async () => {
-  // If already connected, return existing connection
   if (mongoose.connection.readyState >= 1) {
     return mongoose.connection;
   }
 
-  // If connection is already in progress, await the cached promise
   if (cachedConnection) {
     return await cachedConnection;
   }

@@ -1,9 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
-/**
- * Middleware to protect admin routes using JWT Bearer token
- */
 export const protect = async (req, res, next) => {
   let token;
 

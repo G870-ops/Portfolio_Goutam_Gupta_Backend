@@ -1,10 +1,5 @@
 import Project from '../models/Project.js';
 
-/**
- * @desc   Fetch all projects
- * @route  GET /api/projects
- * @access Public
- */
 export const getProjects = async (req, res, next) => {
   try {
     const { category, featured } = req.query;
@@ -29,11 +24,6 @@ export const getProjects = async (req, res, next) => {
   }
 };
 
-/**
- * @desc   Fetch single project by ID
- * @route  GET /api/projects/:id
- * @access Public
- */
 export const getProjectById = async (req, res, next) => {
   try {
     const project = await Project.findById(req.params.id);
@@ -53,11 +43,6 @@ export const getProjectById = async (req, res, next) => {
   }
 };
 
-/**
- * @desc   Create new project
- * @route  POST /api/projects
- * @access Private/Admin
- */
 export const createProject = async (req, res, next) => {
   try {
     const {
@@ -99,11 +84,6 @@ export const createProject = async (req, res, next) => {
   }
 };
 
-/**
- * @desc   Update existing project
- * @route  PUT /api/projects/:id
- * @access Private/Admin
- */
 export const updateProject = async (req, res, next) => {
   try {
     const project = await Project.findById(req.params.id);
@@ -138,11 +118,6 @@ export const updateProject = async (req, res, next) => {
   }
 };
 
-/**
- * @desc   Delete project
- * @route  DELETE /api/projects/:id
- * @access Private/Admin
- */
 export const deleteProject = async (req, res, next) => {
   try {
     const project = await Project.findById(req.params.id);

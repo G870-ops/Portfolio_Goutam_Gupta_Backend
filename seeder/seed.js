@@ -110,32 +110,27 @@ const projectsData = [
 ];
 
 const skillsData = [
-  // Programming Languages
   { category: 'Programming Languages', name: 'JavaScript (ES6+)', proficiency: 92, icon: 'Code' },
   { category: 'Programming Languages', name: 'TypeScript', proficiency: 86, icon: 'FileCode' },
   { category: 'Programming Languages', name: 'Java', proficiency: 88, icon: 'Coffee' },
   { category: 'Programming Languages', name: 'C / C++', proficiency: 82, icon: 'Cpu' },
   { category: 'Programming Languages', name: 'Python', proficiency: 78, icon: 'Terminal' },
 
-  // Frontend Engineering
   { category: 'Frontend Engineering', name: 'React.js', proficiency: 94, icon: 'Atom' },
   { category: 'Frontend Engineering', name: 'Tailwind CSS', proficiency: 92, icon: 'Wind' },
   { category: 'Frontend Engineering', name: 'HTML5 & CSS3', proficiency: 95, icon: 'Layout' },
   { category: 'Frontend Engineering', name: 'Vite & Next.js', proficiency: 84, icon: 'Zap' },
   { category: 'Frontend Engineering', name: 'Bootstrap', proficiency: 88, icon: 'Grid' },
 
-  // Backend Ecosystem
   { category: 'Backend Ecosystem', name: 'Node.js', proficiency: 90, icon: 'Server' },
   { category: 'Backend Ecosystem', name: 'Express.js', proficiency: 91, icon: 'Layers' },
   { category: 'Backend Ecosystem', name: 'REST APIs & JWT', proficiency: 93, icon: 'Lock' },
   { category: 'Backend Ecosystem', name: 'Spring Boot', proficiency: 72, icon: 'Shield' },
 
-  // Database Management
   { category: 'Database Management', name: 'MongoDB & Mongoose', proficiency: 90, icon: 'Database' },
   { category: 'Database Management', name: 'MySQL', proficiency: 85, icon: 'HardDrive' },
   { category: 'Database Management', name: 'Firebase Firestore', proficiency: 84, icon: 'Cloud' },
 
-  // Tools & Core Skills
   { category: 'Tools & Core Skills', name: 'Git & GitHub', proficiency: 92, icon: 'GitBranch' },
   { category: 'Tools & Core Skills', name: 'Postman API Testing', proficiency: 90, icon: 'Send' },
   { category: 'Tools & Core Skills', name: 'Android Studio', proficiency: 86, icon: 'Smartphone' },
@@ -153,21 +148,17 @@ const seedDB = async () => {
     await mongoose.connect(mongoUri);
     console.log('[SEED] Connected to MongoDB Atlas successfully.');
 
-    // 1. Clear existing items
     await Project.deleteMany({});
     await Skill.deleteMany({});
     await User.deleteMany({});
     console.log('[SEED] Cleared existing Projects, Skills, and Users.');
 
-    // 2. Insert Projects
     await Project.insertMany(projectsData);
     console.log(`[SEED] Inserted ${projectsData.length} projects.`);
 
-    // 3. Insert Skills
     await Skill.insertMany(skillsData);
     console.log(`[SEED] Inserted ${skillsData.length} skills.`);
 
-    // 4. Create Admin User
     const adminUser = new User({
       username: process.env.ADMIN_USERNAME || 'goutam',
       email: process.env.ADMIN_EMAIL || 'goutamgupta605@gmail.com',

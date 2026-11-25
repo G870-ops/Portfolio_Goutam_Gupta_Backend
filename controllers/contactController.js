@@ -1,12 +1,8 @@
 import nodemailer from 'nodemailer';
 import Message from '../models/Message.js';
 
-/**
- * Configure Nodemailer Transporter
- */
 const createTransporter = () => {
   const user = process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : 'goutamgupta605@gmail.com';
-  // Gmail app passwords can contain spaces, strip them for compatibility
   const pass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.replace(/\s+/g, '') : null;
 
   if (!user || !pass) {
@@ -28,11 +24,6 @@ const createTransporter = () => {
   });
 };
 
-/**
- * @desc   Submit contact form inquiry and trigger email notification
- * @route  POST /api/contact
- * @access Public
- */
 export const submitContact = async (req, res, next) => {
   try {
     const { name, email, subject, message } = req.body;
@@ -44,7 +35,6 @@ export const submitContact = async (req, res, next) => {
       });
     }
 
-    // 1. Save message to MongoDB
     const savedMessage = await Message.create({
       name,
       email,
@@ -52,7 +42,6 @@ export const submitContact = async (req, res, next) => {
       message,
     });
 
-    // 2. Dispatch Email Notification via Nodemailer (if configured)
     const transporter = createTransporter();
     let emailSent = false;
     let mailErrorMsg = null;
@@ -99,7 +88,6 @@ export const submitContact = async (req, res, next) => {
       } catch (mailError) {
         mailErrorMsg = mailError.message;
         console.error('[EMAIL NOTIFICATION WARNING] Nodemailer failed to send email:', mailError);
-        // Do not crash, message is safely in MongoDB
       }
     } else {
       console.warn('[EMAIL NOTIFICATION WARNING] Transporter could not be created. Check EMAIL_USER & EMAIL_PASS in environment.');
@@ -117,11 +105,6 @@ export const submitContact = async (req, res, next) => {
   }
 };
 
-/**
- * @desc   Fetch all contact messages
- * @route  GET /api/contact
- * @access Private/Admin
- */
 export const getMessages = async (req, res, next) => {
   try {
     const messages = await Message.find().sort({ createdAt: -1 });
@@ -135,11 +118,6 @@ export const getMessages = async (req, res, next) => {
   }
 };
 
-/**
- * @desc   Mark message as read
- * @route  PATCH /api/contact/:id/read
- * @access Private/Admin
- */
 export const markMessageRead = async (req, res, next) => {
   try {
     const message = await Message.findById(req.params.id);
@@ -163,11 +141,6 @@ export const markMessageRead = async (req, res, next) => {
   }
 };
 
-/**
- * @desc   Delete message
- * @route  DELETE /api/contact/:id
- * @access Private/Admin
- */
 export const deleteMessage = async (req, res, next) => {
   try {
     const message = await Message.findById(req.params.id);

@@ -11,11 +11,6 @@ const defaultProfile = {
   profileImg: '/profile.jpg',
 };
 
-/**
- * @desc   Get public profile information
- * @route  GET /api/profile
- * @access Public
- */
 export const getProfile = async (req, res, next) => {
   try {
     let profile = null;
@@ -41,11 +36,6 @@ export const getProfile = async (req, res, next) => {
   }
 };
 
-/**
- * @desc   Update profile information
- * @route  PUT /api/profile
- * @access Private/Admin
- */
 export const updateProfile = async (req, res, next) => {
   try {
     const { name, bio, email, phone, github, linkedin, resumeEmail, profileImg } = req.body;
