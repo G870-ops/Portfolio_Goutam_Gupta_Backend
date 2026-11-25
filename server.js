@@ -10,6 +10,7 @@ import skillRoutes from './routes/skillRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -105,6 +106,7 @@ app.use('/api/skills', skillRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
